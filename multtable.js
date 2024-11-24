@@ -4,8 +4,43 @@ Created by sejager
 This is a JavaScript file to make the dynamic multiplication table dynamic.
 */
 
-// Thanks to various w3schools pages for helping.
+$(document).ready(function() {
+    // https://stackoverflow.com/a/29451695 how to compare values
+    jQuery.validator.addMethod('greaterThan', function (value, element, param) {
+        return parseInt(value) > parseInt($(param).val());
+    }, jQuery.validator.format('The minimum values must be lower than the maximum values.'));
 
+    jQuery.validator.addMethod('notFartherApartThan', function (value, element, param) {
+        return parseInt(value) < parseInt($(param).val()) + 100;
+    }, jQuery.validator.format('The difference between the minimum and maximum values must not exceed 100.'));
+
+    jQuery.validator.addMethod('withinBoundaries', function (value, element) {
+        return parseInt(value) > -1000 && value < 1000;
+    }, jQuery.validator.format('The values must be numbers between -999 and 999.'));
+
+    $('#numValues').validate({
+        rules: {
+            mincol: {
+                withinBoundaries: true
+            },
+            maxcol: {
+                withinBoundaries: true,
+                greaterThan: '#mincol',
+                notFartherApartThan: '#mincol'
+            },
+            minrow: {
+                withinBoundaries: true
+            },
+            maxrow: {
+                withinBoundaries: true,
+                greaterThan: '#minrow',
+                notFartherApartThan: '#minrow'
+            }
+        }
+    })
+});
+
+// Thanks to various w3schools pages for helping.
 function tableCreate() {
     // Get the values from the submission form to make a table
     var mincol = document.getElementById("mincol").value;
@@ -13,21 +48,12 @@ function tableCreate() {
     var minrow = document.getElementById("minrow").value;
     var maxrow = document.getElementById("maxrow").value;
 
-    // Get rid of the old table or validation message if necessary.
+    // Get rid of the old table if necessary.
     // Thanks to https://stackoverflow.com/a/32777600
     if (document.getElementById("tableContainer")) {
         var oldContainer = document.getElementById("tableContainer");
         oldContainer.parentElement.removeChild(oldContainer);
     }
-
-    if (document.getElementById("validmsg")) {
-        var oldMsg = document.getElementById("validmsg");
-        oldMsg.parentElement.removeChild(oldMsg);
-    }
-
-    // Exit the function if the values aren't valid
-    if (validateForm() == false)
-        return 0;
 
     // Create a new table container with all its contents
 
@@ -83,7 +109,7 @@ function tableCreate() {
 /* Prevents the program from accepting too large a workload and also
 lets the user know what to do differently. */
 
-function validateForm() {
+/*function validateForm() {
     var mincol = Number(document.getElementById("mincol").value);
     var maxcol = Number(document.getElementById("maxcol").value);
     var minrow = Number(document.getElementById("minrow").value);
@@ -116,7 +142,7 @@ function validateForm() {
     else {
         return true;
     }
-}
+}*/
 
 // Have the submit button be the trigger to create the table
 // Thanks to https://stackoverflow.com/a/69773796

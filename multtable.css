@@ -59,6 +59,14 @@ input[type=submit]:hover {
     background-color: lightgray;
 }
 
+
+.error {
+    color: red;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* The table can only get so large before it scrolls to avoid massive tables from looking terrible. */
 /* Thanks to https://stackoverflow.com/a/11152394 */
 #tableContainer {

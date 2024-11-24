@@ -4,21 +4,27 @@ Created by sejager
 This is a JavaScript file to make the dynamic multiplication table dynamic.
 */
 
+
+// Thanks to https://jqueryvalidation.org for helping with jQuery validation
+
+// Once the document is ready create the needed error methods and assign them to the relevant elements.
 $(document).ready(function() {
     // https://stackoverflow.com/a/29451695 how to compare values
     jQuery.validator.addMethod('greaterThan', function (value, element, param) {
         return parseInt(value) > parseInt($(param).val());
-    }, jQuery.validator.format('The minimum values must be lower than the maximum values.'));
+    }, jQuery.validator.format('The minimum value must be lower than the maximum value.'));
 
     jQuery.validator.addMethod('notFartherApartThan', function (value, element, param) {
         return parseInt(value) < parseInt($(param).val()) + 100;
     }, jQuery.validator.format('The difference between the minimum and maximum values must not exceed 100.'));
 
-    jQuery.validator.addMethod('withinBoundaries', function (value, element) {
+    jQuery.validator.addMethod('withinBoundaries', function (value, element) { 
         return parseInt(value) > -1000 && value < 1000;
-    }, jQuery.validator.format('The values must be numbers between -999 and 999.'));
+    }, jQuery.validator.format('The value must be a number between -999 and 999.'));
 
     $('#numValues').validate({
+        // Thanks to https://stackoverflow.com/a/27430858
+        errorElement: 'div',
         rules: {
             mincol: {
                 withinBoundaries: true
@@ -106,47 +112,11 @@ function tableCreate() {
     document.getElementById("tableContainer").appendChild(tbl);
 }
 
-/* Prevents the program from accepting too large a workload and also
-lets the user know what to do differently. */
-
-/*function validateForm() {
-    var mincol = Number(document.getElementById("mincol").value);
-    var maxcol = Number(document.getElementById("maxcol").value);
-    var minrow = Number(document.getElementById("minrow").value);
-    var maxrow = Number(document.getElementById("maxrow").value);
-
-    // Possible error cases, textContent explains each case
-    if (mincol >= maxcol || minrow >= maxrow) {
-        const msg = document.createElement("p");
-        msg.setAttribute("id", "validmsg");
-        msg.textContent = "The minimum values must be lower than the maximum values.";
-        document.body.appendChild(msg);
-        return false;
-    }
-    else if((maxrow - minrow) > 100 || (maxcol - mincol) > 100) {
-        const msg = document.createElement("p");
-        msg.setAttribute("id", "validmsg");
-        msg.textContent = "The difference between the minimum and maximum values must not exceed 100.";
-        document.body.appendChild(msg);
-        return false;
-    }
-    else if (Math.abs(minrow) > 999 || Math.abs(maxrow) > 999 || Math.abs(mincol) > 999 || Math.abs(maxcol) > 999) {
-        const msg = document.createElement("p");
-        msg.setAttribute("id", "validmsg");
-        msg.textContent = "The values must be numbers between -999 and 999.";
-        document.body.appendChild(msg);
-        return false;
-    }
-
-    // Good to go!
-    else {
-        return true;
-    }
-}*/
-
-// Have the submit button be the trigger to create the table
+// Have the submit button be the trigger to create the table, but first check that the form is valid
 // Thanks to https://stackoverflow.com/a/69773796
 var btn = document.getElementById("subbtn");
 btn.addEventListener("click", () => {
-    tableCreate();
+    if ($('#numValues').valid() == true) {
+        tableCreate();
+    }
 })

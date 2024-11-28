@@ -4,7 +4,7 @@ Created by sejager
 This is a stylesheet to format the dynamic multiplication table.
 */
 
-/* All the elements should be cenetered within the webbrowser.*/
+/* All the elements should be centered within the webbrowser.*/
 
 h1 {
     font-size: 2em;
@@ -18,6 +18,10 @@ h2 {
 p {
     text-align: center;
 }
+
+/*
+-------------------------- F O R M S E C T I O N -----------------------
+*/
 
 form {
     width: 250px;
@@ -41,7 +45,7 @@ input {
 /* Only let users input numbers to save everybody a headache. */
 input[type=number] {
     border-radius: 4px;
-    width: 3em;
+    width: 45px;
 }
 
 /* Should be clear when the button is hit. */
@@ -67,8 +71,23 @@ input[type=submit]:hover {
     margin-right: auto;
 }
 
-/* The table can only get so large before it scrolls to avoid massive tables from looking terrible. */
-/* Thanks to https://stackoverflow.com/a/11152394 */
+/* Sliders */
+#mincolslider , #maxcolslider, #minrowslider, #maxrowslider {
+    background: lightgray;
+}
+
+#mincolslider .ui-slider-handle, #maxcolslider .ui-slider-handle,
+#minrowslider .ui-slider-handle, #maxrowslider .ui-slider-handle {
+    width: 10px;
+    background: black;
+    border-radius: 6px;
+}
+
+/*
+--------------------- T A B L E S E C T I O N --------------------------
+The table can only get so large before it scrolls to avoid massive tables from looking terrible.
+Thanks to https://stackoverflow.com/a/11152394
+*/
 #tableContainer {
     max-width: 70%;
     max-height: 500px;

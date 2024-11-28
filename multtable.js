@@ -15,7 +15,7 @@ $(document).ready(function() {
     }, jQuery.validator.format('The minimum value must be lower than the maximum value.'));
 
     jQuery.validator.addMethod('notFartherApartThan', function (value, element, param) {
-        return parseInt(value) < parseInt($(param).val()) + 100;
+        return parseInt(value) < parseInt($(param).val()) + 101;
     }, jQuery.validator.format('The difference between the minimum and maximum values must not exceed 100.'));
 
     jQuery.validator.addMethod('withinBoundaries', function (value, element) { 
@@ -44,6 +44,76 @@ $(document).ready(function() {
             }
         }
     })
+
+    // Slider settings
+    // Thanks to https://jesseheines.com/~heines/91.461/91.461-2015-16f/461-assn/jQueryUI1.8_Ch06_SliderWidget.pdf
+    // The slide function updates the numeric value in the input field as the slider moves
+    // Thanks to the comment by chrisrbailey on this answer https://stackoverflow.com/a/621202
+    // which I found thanks to https://stackoverflow.com/a/2157466
+    var mincolslider = {
+        value: $('#mincol').val(),
+        min: -999,
+        max: 998,
+        step: 1,
+        animated: true,
+        slide: function(event, ui) {
+            $('#mincol').val(ui.value)
+        }
+    }
+    var maxcolslider = {
+        value: $('#maxcol').val(),
+        min: -998,
+        max: 999,
+        step: 1,
+        animated: true,
+        slide: function(event, ui) {
+            $('#maxcol').val(ui.value)
+        }
+    }
+    var minrowslider = {
+        value: $('#minrow').val(),
+        min: -999,
+        max: 998,
+        step: 1,
+        animated: true,
+        slide: function(event, ui) {
+            $('#minrow').val(ui.value)
+        }
+    }
+    var maxrowslider = {
+        value: $('#maxrow').val(),
+        min: -998,
+        max: 999,
+        step: 1,
+        animated: true,
+        slide: function(event, ui) {
+            $('#maxrow').val(ui.value)
+        }
+    }
+
+    $('#mincolslider').slider(mincolslider);
+    $('#maxcolslider').slider(maxcolslider);
+    $('#minrowslider').slider(minrowslider);
+    $('#maxrowslider').slider(maxrowslider);
+
+    // With .change it only updates once you exit the input field if you're typing
+    // in a number, so to make it as dynamic as possible a setInterval function was used.
+    // Thanks to https://stackoverflow.com/q/9218885
+    setInterval(function() {$('#mincol').each(function() {
+        $('#mincolslider').slider('value', $('#mincol').val())
+    })}, 1)
+
+    setInterval(function() {$('#maxcol').each(function() {
+        $('#maxcolslider').slider('value', $('#maxcol').val())
+    })}, 1)
+
+    setInterval(function() {$('#minrow').each(function() {
+        $('#minrowslider').slider('value', $('#minrow').val())
+    })}, 1)
+
+    setInterval(function() {$('#maxrow').each(function() {
+        $('#maxrowslider').slider('value', $('#maxrow').val())
+    })}, 1)
 });
 
 // Thanks to various w3schools pages for helping.

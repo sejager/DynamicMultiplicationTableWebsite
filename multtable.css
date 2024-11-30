@@ -83,6 +83,13 @@ input[type=submit]:hover {
     border-radius: 6px;
 }
 
+/* Tabs */
+#tabAlert {
+    border-top: red 1px solid !important;
+    border-right: red 1px solid !important;
+    border-left: red 1px solid !important;
+}
+
 /*
 --------------------- T A B L E S E C T I O N --------------------------
 The table can only get so large before it scrolls to avoid massive tables from looking terrible.

@@ -7,6 +7,7 @@ This is a JavaScript file to make the dynamic multiplication table dynamic.
 
 // Have the needed functions be run once the document has loaded.
 $(document).ready(function() {
+
     validator();
     sliders();
     tabs();
@@ -31,8 +32,8 @@ function validator() {
     }, jQuery.validator.format('The difference between the minimum and maximum values must not exceed 100.'));
 
     jQuery.validator.addMethod('withinBoundaries', function (value, element) { 
-        return parseInt(value) > -1000 && value < 1000;
-    }, jQuery.validator.format('The value must be a number between -999 and 999.'));
+        return parseInt(value) > -100 && value < 100;
+    }, jQuery.validator.format('The value must be a number between -99 and 99.'));
 
     $('#numValues').validate({
         // Thanks to https://stackoverflow.com/a/27430858
@@ -67,8 +68,8 @@ function sliders() {
     // which I found thanks to https://stackoverflow.com/a/2157466
     var mincolslider = {
         value: $('#mincol').val(),
-        min: -999,
-        max: 998,
+        min: -99,
+        max: 98,
         step: 1,
         animated: true,
         slide: function(event, ui) {
@@ -77,8 +78,8 @@ function sliders() {
     }
     var maxcolslider = {
         value: $('#maxcol').val(),
-        min: -998,
-        max: 999,
+        min: -98,
+        max: 99,
         step: 1,
         animated: true,
         slide: function(event, ui) {
@@ -87,8 +88,8 @@ function sliders() {
     }
     var minrowslider = {
         value: $('#minrow').val(),
-        min: -999,
-        max: 998,
+        min: -99,
+        max: 98,
         step: 1,
         animated: true,
         slide: function(event, ui) {
@@ -97,8 +98,8 @@ function sliders() {
     }
     var maxrowslider = {
         value: $('#maxrow').val(),
-        min: -998,
-        max: 999,
+        min: -98,
+        max: 99,
         step: 1,
         animated: true,
         slide: function(event, ui) {
@@ -133,11 +134,13 @@ function sliders() {
 
 function tabs() {
     // Tab settings
-    // Thanks to https://jesseheines.com/~heines/91.461/91.461-2015-16f/461-assn/jQueryUI1.8_Ch03_TabsWidget.pdf
+    // Not much thanks to https://jesseheines.com/~heines/91.461/91.461-2015-16f/461-assn/jQueryUI1.8_Ch03_TabsWidget.pdf
+    // Half of the functions don't even work anymore.
     $('#tabs').tabs();
+    $('#tabs').hide();
 }
 
-function tableCreate() {
+function tableCreate(tabNum) {
         // Get the latest values
         var mincol = $('#mincol').val()
         var maxcol = $('#maxcol').val()
@@ -149,13 +152,17 @@ function tableCreate() {
         var tabId = mincol + maxcol + minrow + maxrow;
 
         // Don't create a new tab if we already have a tab with those values
+        // Instead highlight the tab and switch to it
+        // To ensure we don't have multiple highlighted tabs remove the attribute
+        // Thanks to https://stackoverflow.com/a/64354717
+        if (document.getElementById('tabAlert') != null)
+            document.getElementById('tabAlert').removeAttribute('id');
         if (document.getElementById(tabId) != null) {
-            console.log('Tab already exists.');
+            // Surely there's a better way...
+            document.getElementsByClassName('ui-tabs-nav')[0].querySelector('[aria-controls="'+ tabId + '"]').setAttribute('id', 'tabAlert');
+            $('#tabs').tabs('option', 'active', $('#' + tabId).index('.ui-tabs-panel'));
             return;
         }
-
-        $('#tabs').find('ul').append('<li><a href="' + tabId + '">' + '<div>'
-            + tabName + '</div>' + '</a></li>');
 
         // Create a new table container with all its contents
         const tblCntnr = document.createElement("div");
@@ -203,10 +210,12 @@ function tableCreate() {
         tbl.appendChild(tblBody);
         tblCntnr.appendChild(tbl);
 
-        // Append the newly created table to the new tab
-        // Thanks to https://stackoverflow.com/a/18076415 and https://stackoverflow.com/a/21515395
-        $('#tabs').append('<div id="' + tabId + '">hey</div>')
-        $('#tabs').append(tblCntnr);
-        $('#tabs').append('</div>');
+        // Append the newly created table to the new tab and switch to it
+        // Thanks to https://jqueryui.com/upgrade-guide/1.9/#deprecated-add-and-remove-methods-and-events-use-refresh-method
+        $('#tabs').find('ul').append('<li><a href="#' + tabId + '">'+ tabName + '</a></li>');
+        $('#tabs').append('<div id="' + tabId + '"></div>');
+        $('#' + tabId).append(tblCntnr);
         $('#tabs').tabs('refresh');
+        $('#tabs').tabs('option', 'active', $('#' + tabId).index('.ui-tabs-panel'));
+        $('#tabs').show();
 };

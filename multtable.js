@@ -5,6 +5,10 @@ This is a JavaScript file to make the dynamic multiplication table dynamic.
 */
 
 
+const MINVALUE = -99;
+const MAXVALUE = 99;
+const selectedTabs = [];
+
 // Have the needed functions be run once the document has loaded.
 $(document).ready(function() {
 
@@ -16,6 +20,18 @@ $(document).ready(function() {
     $('#subbtn').click(function () {
         if ($('#numValues').valid() == true)
             tableCreate();
+    });
+
+    $('#dltBtn').click(function () {
+        if (selectedTabs.length > 0)
+                deleteTabs();
+    });
+
+    // Thanks to https://stackoverflow.com/a/23852114
+    $(document).on('click', '.tabDltBtn', function() {
+        // Get just the id number without the btn
+        this.classList.add('pushed')
+        selectedTabs.push(this.id.slice(3));
     });
 });
 
@@ -32,8 +48,9 @@ function validator() {
     }, jQuery.validator.format('The difference between the minimum and maximum values must not exceed 100.'));
 
     jQuery.validator.addMethod('withinBoundaries', function (value, element) { 
-        return parseInt(value) > -100 && value < 100;
-    }, jQuery.validator.format('The value must be a number between -99 and 99.'));
+        return parseInt(value) >= MINVALUE && parseInt(value) <= MAXVALUE;
+    }, jQuery.validator.format('The value must be a number between ' + MINVALUE
+        + ' and ' + MAXVALUE + '.'));
 
     $('#numValues').validate({
         // Thanks to https://stackoverflow.com/a/27430858
@@ -68,8 +85,8 @@ function sliders() {
     // which I found thanks to https://stackoverflow.com/a/2157466
     var mincolslider = {
         value: $('#mincol').val(),
-        min: -99,
-        max: 98,
+        min: MINVALUE,
+        max: MAXVALUE - 1,
         step: 1,
         animated: true,
         slide: function(event, ui) {
@@ -78,8 +95,8 @@ function sliders() {
     }
     var maxcolslider = {
         value: $('#maxcol').val(),
-        min: -98,
-        max: 99,
+        min: MINVALUE + 1,
+        max: MAXVALUE,
         step: 1,
         animated: true,
         slide: function(event, ui) {
@@ -88,8 +105,8 @@ function sliders() {
     }
     var minrowslider = {
         value: $('#minrow').val(),
-        min: -99,
-        max: 98,
+        min: MINVALUE,
+        max: MAXVALUE - 1,
         step: 1,
         animated: true,
         slide: function(event, ui) {
@@ -98,8 +115,8 @@ function sliders() {
     }
     var maxrowslider = {
         value: $('#maxrow').val(),
-        min: -98,
-        max: 99,
+        min: MINVALUE + 1,
+        max: MAXVALUE,
         step: 1,
         animated: true,
         slide: function(event, ui) {
@@ -164,6 +181,13 @@ function tableCreate(tabNum) {
             return;
         }
 
+        // Check that there aren't already 10 tabs, otherwise display an error message
+        else if (($('#tabs li').length >= 10)) {
+            if (!document.getElementById('tabError'))
+                $('#tabs').before("<div id='tabError' class='error'>You can't have more than 10 tabs open.</div>");
+            return;
+        }
+
         // Create a new table container with all its contents
         const tblCntnr = document.createElement("div");
         tblCntnr.setAttribute("id", "tableContainer");
@@ -212,10 +236,37 @@ function tableCreate(tabNum) {
 
         // Append the newly created table to the new tab and switch to it
         // Thanks to https://jqueryui.com/upgrade-guide/1.9/#deprecated-add-and-remove-methods-and-events-use-refresh-method
-        $('#tabs').find('ul').append('<li><a href="#' + tabId + '">'+ tabName + '</a></li>');
+        // Each tab also has a delete button
+        $('#tabs').find('ul').append('<li><a href="#' + tabId + '">'+ tabName
+            + '</a><button class="tabDltBtn" id="btn' + tabId + '"><div class="btnX">x</div></button></li>');
         $('#tabs').append('<div id="' + tabId + '"></div>');
         $('#' + tabId).append(tblCntnr);
         $('#tabs').tabs('refresh');
         $('#tabs').tabs('option', 'active', $('#' + tabId).index('.ui-tabs-panel'));
         $('#tabs').show();
+};
+
+function deleteTabs() {
+    // Delete all the tabs that have been selected
+    while (selectedTabs.length != 0) {
+        var tabIndex = $('#' + selectedTabs.pop()).index('.ui-tabs-panel');
+        console.log()
+        // Remove the tab
+        var tab = $('#tabs').find( '.ui-tabs-nav li:eq(' + tabIndex + ')').remove();
+        // Find the id of the associated panel
+        var panelId = tab.attr('aria-controls');
+        // Remove the panel
+        $('#' + panelId).remove();
+    }
+    // Refresh the tabs widget
+    $('tabs').tabs('refresh');
+    // Remove tab alert warning
+    if (document.getElementById('tabAlert') != null)
+        document.getElementById('tabAlert').removeAttribute('id');
+    // Remove warning if tabs can now be added
+    if (($('#tabs li').length < 10) && document.getElementById('tabError')) 
+        document.getElementById('tabError').parentElement.removeChild(tabError);
+    // Hide the tabs if needed
+    if ($('#tabs li').length == 0)
+        $('#tabs').hide();
 };

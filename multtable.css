@@ -30,6 +30,7 @@ form {
     padding: 0px 12px;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 8px;
 }
 
 label {
@@ -59,7 +60,7 @@ input[type=submit] {
     cursor: pointer;
 }
 
-input[type=submit]:hover {
+input[type=submit]:hover, .tabDltBtn:hover, #dltBtn:hover {
     background-color: lightgray;
 }
 
@@ -88,6 +89,32 @@ input[type=submit]:hover {
     border-top: red 1px solid !important;
     border-right: red 1px solid !important;
     border-left: red 1px solid !important;
+}
+
+.tabDltBtn {
+    border-radius: 8px;
+    font-size: 100px;
+}
+
+.btnX {
+    font-size: 14px;
+}
+
+.pushed {
+    background-color: darkgray !important;
+}
+
+#deleteButton {
+    text-align: center;
+    font-size: 13px;
+}
+
+#dltBtn {
+    border-radius: 6px;
+    text-align: center;
+    margin: 2px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /*

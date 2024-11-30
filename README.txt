@@ -7,5 +7,6 @@ This is really just so that the program doesn't end up running for way too long.
 It checks that this is the case using the jQuery validation plugin.
 This website also features sliders that can be used to adjust the numeric inputs.
 There's two-way binding between the sliders and the input fields so they dynamically update.
-Tabs are going to be added.
+Each time a table is created it is fit inside a new tab.
+These tabs can also be deleted one-by-one or multiple at a time.
 Created by sejager.

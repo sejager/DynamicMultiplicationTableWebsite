@@ -142,6 +142,7 @@ tr td {
     margin: 0px;
     border: 2px black solid;
     text-align: center;
+    min-width: 60px;
 }
 
 tr:nth-child(odd) {
